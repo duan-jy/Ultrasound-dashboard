@@ -1,0 +1,89 @@
+/**
+ * 全局样式
+ * Tailwind CSS 基础配置和自定义样式
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    @apply bg-dark-400 text-gray-100 antialiased;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* 滚动条样式 */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-300;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-50 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary-600;
+  }
+}
+
+@layer components {
+  /* 卡片基础样式 */
+  .card {
+    @apply bg-dark-200 border border-dark-50 rounded-lg;
+  }
+
+  /* 发光边框效果 */
+  .glow-border {
+    @apply border border-primary-500/30;
+    box-shadow: 0 0 15px rgba(0, 136, 230, 0.15);
+  }
+
+  /* 状态指示器 */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+
+  .status-dot--online {
+    @apply bg-success animate-pulse;
+  }
+
+  .status-dot--offline {
+    @apply bg-danger;
+  }
+
+  .status-dot--processing {
+    @apply bg-warning animate-pulse;
+  }
+
+  /* 信息标签 */
+  .info-label {
+    @apply text-xs text-gray-400 uppercase tracking-wide;
+  }
+
+  .info-value {
+    @apply text-sm text-gray-100 font-medium;
+  }
+}
+
+@layer utilities {
+  /* 文字渐变 */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-400 to-primary-600;
+  }
+
+  /* 毛玻璃效果 */
+  .glass {
+    @apply bg-dark-200/80 backdrop-blur-sm;
+  }
+}
