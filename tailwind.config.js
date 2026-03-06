@@ -1,6 +1,6 @@
 /**
- * Tailwind CSS 配置
- * 医疗超声智能体大屏主题配置
+ * Tailwind CSS 配置 V2
+ * 基于 Geist Design System 的简洁现代风格
  */
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -8,48 +8,33 @@ export default {
   theme: {
     extend: {
       colors: {
-        // 主色调 - 医疗蓝
+        // 使用 CSS 变量实现主题
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
         primary: {
-          50: '#e6f4ff',
-          100: '#b3dfff',
-          200: '#80c9ff',
-          300: '#4db3ff',
-          400: '#1a9dff',
-          500: '#0088e6',
-          600: '#006bb3',
-          700: '#004d80',
-          800: '#00304d',
-          900: '#00131a',
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
         },
-        // 深色背景
-        dark: {
-          50: '#2a3441',
-          100: '#232b36',
-          200: '#1c232c',
-          300: '#151b22',
-          400: '#0e1318',
-          500: '#070a0d',
-          600: '#000000',
+        secondary: {
+          DEFAULT: 'hsl(var(--background-secondary))',
         },
-        // 状态色
-        success: '#10b981',
-        warning: '#f59e0b',
-        danger: '#ef4444',
-        info: '#3b82f6',
+        border: 'hsl(var(--border))',
+        success: 'hsl(var(--success))',
+        warning: 'hsl(var(--warning))',
+        danger: 'hsl(var(--danger))',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        mono: ['JetBrains Mono', 'Consolas', 'monospace'],
+        sans: ['Inter', 'Geist', 'system-ui', '-apple-system', 'sans-serif'],
+        mono: ['Geist Mono', 'JetBrains Mono', 'Consolas', 'monospace'],
+      },
+      borderRadius: {
+        DEFAULT: 'var(--radius)',
+        lg: 'var(--radius-lg)',
+        xl: 'var(--radius-xl)',
       },
       animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'glow': 'glow 2s ease-in-out infinite alternate',
-      },
-      keyframes: {
-        glow: {
-          '0%': { boxShadow: '0 0 5px rgba(0, 136, 230, 0.5)' },
-          '100%': { boxShadow: '0 0 20px rgba(0, 136, 230, 0.8)' },
-        },
+        'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
+        'slide-up': 'slide-up 0.3s ease-out',
       },
     },
   },

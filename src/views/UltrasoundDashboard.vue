@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
- * 超声智能体大屏主页面
- * 三栏布局：左侧患者列表+语音 | 中间视频区 | 右侧诊断区
+ * 超声智能体大屏主页面 V2
+ * 采用 Geist Design System 风格的简洁现代设计
  */
 import { onMounted, computed, ref, onUnmounted } from 'vue'
 import { useDashboardStore } from '@/stores/dashboard'
@@ -11,14 +11,7 @@ import { generateMockAnalysisResult } from '@/services/mock'
 import type { PatientInfo, ServiceConfig } from '@/types'
 
 // 组件
-import PatientQueue from '@/components/patient/PatientQueue.vue'
-import VoicePanel from '@/components/voice/VoicePanel.vue'
-import VideoDisplay from '@/components/media/VideoDisplay.vue'
-import DiagnosisPanel from '@/components/diagnosis/DiagnosisPanel.vue'
-import ConnectionStatus from '@/components/status/ConnectionStatus.vue'
-import ImageGallery from '@/components/media/ImageGallery.vue'
 import ServiceConfigModal from '@/components/modals/ServiceConfigModal.vue'
-import GlowCard from '@/components/common/GlowCard.vue'
 
 // Store
 const store = useDashboardStore()
@@ -44,10 +37,8 @@ const formattedTime = computed(() => {
 
 const formattedDate = computed(() => {
   return currentTime.value.toLocaleDateString('zh-CN', {
-    year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-    weekday: 'long',
   })
 })
 
@@ -65,38 +56,27 @@ const currentPatientDisplay = computed(() => {
 
 // 初始化
 onMounted(async () => {
-  // 更新时间
   timeInterval = setInterval(() => {
     currentTime.value = new Date()
   }, 1000)
 
-  // 初始化数据
   await store.initialize()
-  
-  // 加载患者队列
   await store.loadPatientQueue()
   
-  // 默认选中第一个患者
   if (store.patientQueue.length > 0 && !store.currentPatient) {
     store.selectPatient(store.patientQueue[0])
   }
 
-  // 模拟实时分析结果（演示用）
   startMockAnalysis()
 })
 
 onUnmounted(() => {
-  if (timeInterval) {
-    clearInterval(timeInterval)
-  }
-  if (mockAnalysisInterval) {
-    clearInterval(mockAnalysisInterval)
-  }
+  if (timeInterval) clearInterval(timeInterval)
+  if (mockAnalysisInterval) clearInterval(mockAnalysisInterval)
 })
 
 // 方法
 function startMockAnalysis() {
-  // 每5秒生成一个模拟分析结果
   mockAnalysisInterval = setInterval(() => {
     if (store.hasActiveExam) {
       const result = generateMockAnalysisResult()
@@ -105,12 +85,8 @@ function startMockAnalysis() {
   }, 5000)
 }
 
-function handleCapture(imageData: string) {
-  store.saveCapturedImage(imageData, `截图 ${store.capturedImages.length + 1}`)
-}
-
-function handleCaptureError(message: string) {
-  store.addNotification('error', '截图失败', message)
+function handleCapture() {
+  store.saveCapturedImage('data:image/png;base64,...', `截图 ${store.capturedImages.length + 1}`)
 }
 
 function handleSelectPatient(patient: PatientInfo) {
@@ -119,7 +95,6 @@ function handleSelectPatient(patient: PatientInfo) {
 
 function handleStartVoice() {
   store.setVoiceStatus('listening')
-  // 模拟语音识别
   setTimeout(() => {
     store.setVoiceStatus('processing')
     setTimeout(() => {
@@ -143,70 +118,59 @@ function handleSaveConfig(config: ServiceConfig) {
   store.updateServiceConfig(config)
   store.addNotification('success', '配置已保存', '服务配置已更新')
 }
-
-function openConfigModal() {
-  showConfigModal.value = true
-}
 </script>
 
 <template>
-  <div class="h-screen w-screen bg-dark-400 flex flex-col overflow-hidden">
+  <div class="h-screen w-screen flex flex-col overflow-hidden" style="background: hsl(0 0% 4%);">
     <!-- 顶部栏 -->
-    <header class="flex-shrink-0 h-16 bg-dark-300/95 backdrop-blur border-b border-dark-50 px-6 flex items-center justify-between">
-      <!-- 左侧：Logo 和标题 -->
-      <div class="flex items-center gap-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-            </svg>
-          </div>
-          <div>
-            <h1 class="text-lg font-bold text-white tracking-tight">智能超声辅助检查系统</h1>
-            <p class="text-xs text-gray-500">AI-Powered Ultrasound Assistant</p>
-          </div>
+    <header class="h-14 flex items-center justify-between px-4 border-b" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%);">
+      <!-- 左侧：Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: hsl(210 100% 50%);">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+          </svg>
         </div>
+        <span class="text-sm font-semibold text-white">智能超声辅助检查系统</span>
       </div>
 
-      <!-- 中间：当前患者信息 -->
-      <div v-if="currentPatientDisplay" class="flex items-center gap-6 px-6 py-2 bg-dark-200/80 rounded-xl border border-dark-50">
+      <!-- 中间：患者信息 -->
+      <div v-if="currentPatientDisplay" class="flex items-center gap-6 text-sm">
         <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-500 uppercase tracking-wide">姓名</span>
-          <span class="text-primary-400 font-semibold">{{ currentPatientDisplay.name }}</span>
+          <span style="color: hsl(0 0% 60%);">姓名:</span>
+          <span class="font-medium" style="color: hsl(210 100% 60%);">{{ currentPatientDisplay.name }}</span>
         </div>
-        <div class="w-px h-4 bg-dark-50" />
         <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-500 uppercase tracking-wide">年龄</span>
+          <span style="color: hsl(0 0% 60%);">年龄:</span>
           <span class="text-white font-medium">{{ currentPatientDisplay.age }}岁</span>
         </div>
-        <div class="w-px h-4 bg-dark-50" />
         <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-500 uppercase tracking-wide">性别</span>
+          <span style="color: hsl(0 0% 60%);">性别:</span>
           <span class="text-white font-medium">{{ currentPatientDisplay.gender }}</span>
         </div>
-        <div class="w-px h-4 bg-dark-50" />
         <div class="flex items-center gap-2">
-          <span class="text-xs text-gray-500 uppercase tracking-wide">检查部位</span>
-          <span class="text-emerald-400 font-medium">{{ currentPatientDisplay.examPart }}</span>
+          <span style="color: hsl(0 0% 60%);">检查部位:</span>
+          <span class="text-white font-medium">{{ currentPatientDisplay.examPart }}</span>
         </div>
       </div>
 
       <!-- 右侧：操作按钮 -->
-      <div class="flex items-center gap-3">
-        <button class="px-4 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all hover:shadow-lg hover:shadow-primary-500/20 active:scale-95">
+      <div class="flex items-center gap-2">
+        <button class="px-3 py-1.5 text-xs font-medium text-white rounded-md transition-opacity hover:opacity-80" style="background: hsl(210 100% 50%);">
           查看报告
         </button>
-        <button class="px-4 py-2 text-sm font-medium bg-primary-500/15 text-primary-400 border border-primary-500/30 rounded-lg hover:bg-primary-500/25 transition-all">
+        <button class="px-3 py-1.5 text-xs font-medium rounded-md border transition-colors hover:bg-white/5" style="color: hsl(210 100% 60%); border-color: hsl(210 100% 50% / 0.3);">
           触动图
         </button>
-        <button class="px-4 py-2 text-sm font-medium bg-dark-100 text-gray-300 border border-dark-50 rounded-lg hover:border-gray-500 hover:text-white transition-all">
+        <button class="px-3 py-1.5 text-xs font-medium rounded-md border transition-colors hover:bg-white/5" style="color: hsl(0 0% 60%); border-color: hsl(0 0% 15%);">
           使用说明
         </button>
         <button 
-          class="px-4 py-2 text-sm font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/25 transition-all flex items-center gap-2"
-          @click="openConfigModal"
+          class="px-3 py-1.5 text-xs font-medium rounded-md border transition-colors hover:bg-white/5 flex items-center gap-1.5"
+          style="color: hsl(142 76% 45%); border-color: hsl(142 76% 45% / 0.3);"
+          @click="showConfigModal = true"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
@@ -216,128 +180,311 @@ function openConfigModal() {
     </header>
 
     <!-- 主内容区 -->
-    <main class="flex-1 flex gap-4 p-4 min-h-0">
-      <!-- 左栏：患者队列 + 语音助手 -->
-      <aside class="w-72 flex-shrink-0 flex flex-col gap-4">
-        <!-- 患者队列 -->
-        <div class="flex-[1.2] min-h-0">
-          <PatientQueue
-            :patients="store.patientQueue"
-            :current-patient-id="store.currentPatient?.id || null"
-            :loading="store.loading.patient"
-            @select="handleSelectPatient"
-          />
+    <main class="flex-1 flex min-h-0 p-3 gap-3">
+      <!-- 左栏 -->
+      <aside class="w-64 flex flex-col gap-3 flex-shrink-0">
+        <!-- 就诊人数 -->
+        <div class="rounded-lg border overflow-hidden flex flex-col" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%); flex: 1.2;">
+          <div class="px-3 py-2.5 border-b flex items-center justify-between" style="border-color: hsl(0 0% 15%);">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" style="color: hsl(210 100% 50%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span class="text-xs font-medium text-white">就诊人数 ({{ store.patientQueue.length }})</span>
+            </div>
+            <div class="w-1.5 h-1.5 rounded-full animate-pulse" style="background: hsl(142 76% 45%);"></div>
+          </div>
+          <div class="flex-1 overflow-y-auto p-2 space-y-1.5 scrollbar-thin">
+            <div
+              v-for="patient in store.patientQueue"
+              :key="patient.id"
+              :class="[
+                'p-2.5 rounded-md cursor-pointer transition-all',
+                store.currentPatient?.id === patient.id 
+                  ? 'border' 
+                  : 'hover:bg-white/5'
+              ]"
+              :style="store.currentPatient?.id === patient.id 
+                ? 'background: hsl(210 100% 50% / 0.1); border-color: hsl(210 100% 50% / 0.3);' 
+                : ''"
+              @click="handleSelectPatient(patient)"
+            >
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm font-medium text-white">{{ patient.name }}</span>
+                <span class="text-xs" style="color: hsl(0 0% 50%);">
+                  {{ patient.gender === 'male' ? '男' : '女' }} {{ patient.age }}岁
+                </span>
+              </div>
+              <div class="text-xs" style="color: hsl(0 0% 50%);">{{ patient.examPart }}</div>
+            </div>
+          </div>
         </div>
 
-        <!-- 语音助手 -->
-        <div class="flex-1 min-h-0">
-          <VoicePanel
-            :status="store.voiceStatus"
-            :transcripts="store.voiceTranscripts"
-            @start-listening="handleStartVoice"
-            @stop-listening="handleStopVoice"
-          />
+        <!-- 语音识别 -->
+        <div class="rounded-lg border overflow-hidden flex flex-col" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%); flex: 1;">
+          <div class="px-3 py-2.5 border-b flex items-center justify-between" style="border-color: hsl(0 0% 15%);">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" style="color: hsl(210 100% 50%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+              <span class="text-xs font-medium text-white">语音识别</span>
+            </div>
+            <div 
+              class="w-1.5 h-1.5 rounded-full"
+              :class="store.voiceStatus === 'listening' ? 'animate-pulse' : ''"
+              :style="`background: ${store.voiceStatus === 'listening' ? 'hsl(210 100% 50%)' : store.voiceStatus === 'idle' ? 'hsl(0 0% 30%)' : 'hsl(38 92% 50%)'};`"
+            ></div>
+          </div>
+          <div class="flex-1 flex flex-col p-3 gap-3 min-h-0">
+            <!-- 麦克风按钮 -->
+            <div class="flex flex-col items-center py-3">
+              <button
+                :class="[
+                  'w-14 h-14 rounded-full flex items-center justify-center transition-all',
+                  store.voiceStatus === 'listening' ? 'scale-110' : ''
+                ]"
+                :style="store.voiceStatus === 'listening' 
+                  ? 'background: hsl(210 100% 50%); box-shadow: 0 0 30px hsl(210 100% 50% / 0.4);' 
+                  : 'background: hsl(0 0% 15%);'"
+                @mousedown="handleStartVoice"
+                @mouseup="handleStopVoice"
+                @mouseleave="handleStopVoice"
+              >
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+              </button>
+              <span class="text-xs mt-2" style="color: hsl(0 0% 50%);">
+                {{ store.voiceStatus === 'idle' ? '按键开始语音输入' : store.voiceStatus === 'listening' ? '聆听中...' : '识别中...' }}
+              </span>
+            </div>
+            
+            <!-- 转录文字 -->
+            <div class="flex-1 rounded-md p-2 overflow-y-auto scrollbar-thin" style="background: hsl(0 0% 4%);">
+              <div v-if="store.voiceTranscripts.length === 0" class="text-xs text-center py-4" style="color: hsl(0 0% 40%);">
+                语音识别内容将在此显示
+              </div>
+              <div v-else class="space-y-2">
+                <div 
+                  v-for="transcript in store.voiceTranscripts" 
+                  :key="transcript.id"
+                  class="text-xs p-2 rounded"
+                  style="background: hsl(0 0% 10%); color: hsl(0 0% 80%);"
+                >
+                  {{ transcript.text }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </aside>
 
-      <!-- 中栏：视频显示 + 图像采集 -->
-      <section class="flex-1 flex flex-col gap-4 min-w-0">
-        <!-- 采集图像区域 -->
-        <GlowCard :has-header="true" glow="none" class="flex-shrink-0">
-          <template #header>
-            <div class="flex items-center justify-between">
-              <h3 class="text-sm font-semibold text-gray-100 flex items-center gap-2">
-                <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                采集图像
-              </h3>
-              <span class="text-xs text-gray-500 bg-dark-100 px-2 py-0.5 rounded-full">
-                总计: {{ store.capturedImages.length }}
-              </span>
-            </div>
-          </template>
-          
-          <!-- 缩略图行 -->
-          <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
-            <div
-              v-for="image in store.capturedImages.slice(0, 10)"
-              :key="image.id"
-              class="w-16 h-16 flex-shrink-0 rounded-lg bg-dark-100 border border-dark-50 overflow-hidden cursor-pointer hover:border-primary-500/50 hover:scale-105 transition-all duration-200"
-            >
-              <div class="w-full h-full bg-dark-50 flex items-center justify-center">
-                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-            </div>
-            <div
-              v-if="store.capturedImages.length === 0"
-              class="flex items-center gap-2 text-sm text-gray-500 py-4"
-            >
-              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- 中栏：视频区 -->
+      <section class="flex-1 flex flex-col gap-3 min-w-0">
+        <!-- 采集图像 -->
+        <div class="rounded-lg border" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%);">
+          <div class="px-3 py-2.5 border-b flex items-center justify-between" style="border-color: hsl(0 0% 15%);">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" style="color: hsl(210 100% 50%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              暂无采集图像，点击截图按钮开始采集
+              <span class="text-xs font-medium text-white">采集图像</span>
+            </div>
+            <span class="text-xs px-2 py-0.5 rounded-full" style="background: hsl(0 0% 15%); color: hsl(0 0% 60%);">
+              总计: {{ store.capturedImages.length }}
+            </span>
+          </div>
+          <div class="p-2 flex gap-2 overflow-x-auto scrollbar-thin">
+            <div
+              v-for="n in 8"
+              :key="n"
+              class="w-14 h-14 flex-shrink-0 rounded-md flex items-center justify-center cursor-pointer transition-all hover:opacity-80"
+              style="background: hsl(0 0% 10%); border: 1px solid hsl(0 0% 15%);"
+            >
+              <svg class="w-5 h-5" style="color: hsl(0 0% 30%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
             </div>
           </div>
-        </GlowCard>
+        </div>
 
-        <!-- 视频区域 -->
-        <div class="flex-1 min-h-0 rounded-xl overflow-hidden">
-          <VideoDisplay
-            :show-controls="true"
-            @capture="handleCapture"
-            @error="handleCaptureError"
-          />
+        <!-- 视频显示区 -->
+        <div class="flex-1 rounded-lg border overflow-hidden relative group" style="background: hsl(0 0% 4%); border-color: hsl(0 0% 15%);">
+          <!-- 占位内容 -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="relative mb-4">
+              <div class="absolute -inset-4 rounded-full blur-2xl animate-pulse" style="background: hsl(210 100% 50% / 0.1);"></div>
+              <svg class="relative w-20 h-20" style="color: hsl(0 0% 20%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <p class="text-sm font-medium" style="color: hsl(0 0% 50%);">视频源未连接</p>
+            <p class="text-xs mt-1 mb-4" style="color: hsl(0 0% 35%);">请选择采集方式开始超声图像采集</p>
+            <div class="flex gap-3">
+              <button class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-opacity hover:opacity-90" style="background: hsl(210 100% 50%);">
+                采集屏幕
+              </button>
+              <button class="px-4 py-2 text-sm font-medium rounded-lg border transition-colors hover:bg-white/5" style="color: hsl(0 0% 70%); border-color: hsl(0 0% 20%);">
+                摄像头
+              </button>
+            </div>
+          </div>
+          
+          <!-- 控制栏（hover显示） -->
+          <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 px-2.5 py-1 rounded-full" style="background: hsl(0 0% 10% / 0.8);">
+                <span class="w-1.5 h-1.5 rounded-full" style="background: hsl(0 84% 60%);"></span>
+                <span class="text-xs text-white">实时采集中</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button 
+                  class="p-2 rounded-lg transition-colors hover:bg-white/10"
+                  style="background: hsl(210 100% 50%);"
+                  @click="handleCapture"
+                >
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
+                <button class="p-2 rounded-lg transition-colors" style="background: hsl(0 0% 15%);">
+                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                  </svg>
+                </button>
+                <button class="p-2 rounded-lg transition-colors" style="background: hsl(0 84% 60%);">
+                  <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <rect x="6" y="6" width="12" height="12" rx="2" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- 右栏：诊断面板 -->
-      <aside class="w-[340px] flex-shrink-0">
-        <DiagnosisPanel
-          :findings="store.diagnosisInfo.findings"
-          :diagnosis="store.diagnosisInfo.diagnosis"
-          :critical-value="store.diagnosisInfo.criticalValue"
-          :positivity="store.diagnosisInfo.positivity"
-          :has-patient="!!store.currentPatient"
-          @update:findings="(v) => store.updateDiagnosisInfo({ findings: v })"
-          @update:diagnosis="(v) => store.updateDiagnosisInfo({ diagnosis: v })"
-          @update:critical-value="(v) => store.updateDiagnosisInfo({ criticalValue: v })"
-          @update:positivity="(v) => store.updateDiagnosisInfo({ positivity: v })"
-        />
+      <!-- 右栏：诊断区 -->
+      <aside class="w-72 flex flex-col gap-3 flex-shrink-0">
+        <!-- 患者画像 -->
+        <div class="rounded-lg border" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%);">
+          <div class="px-3 py-2.5 border-b flex items-center gap-2" style="border-color: hsl(0 0% 15%);">
+            <svg class="w-4 h-4" style="color: hsl(210 100% 50%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span class="text-xs font-medium text-white">患者画像</span>
+          </div>
+          <div class="p-3">
+            <p class="text-xs text-center py-3" style="color: hsl(0 0% 40%);">当前患者暂无历史诊断记录</p>
+          </div>
+        </div>
+
+        <!-- 检查所见 -->
+        <div class="rounded-lg border flex-1 flex flex-col" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%);">
+          <div class="px-3 py-2.5 border-b flex items-center gap-2" style="border-color: hsl(0 0% 15%);">
+            <svg class="w-4 h-4" style="color: hsl(210 100% 50%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            <span class="text-xs font-medium text-white">检查所见</span>
+          </div>
+          <div class="flex-1 p-2">
+            <textarea
+              v-model="store.diagnosisInfo.findings"
+              class="w-full h-full resize-none text-sm rounded-md p-2.5 transition-all focus:outline-none"
+              style="background: hsl(0 0% 4%); border: 1px solid hsl(0 0% 15%); color: hsl(0 0% 80%);"
+              placeholder="请输入检查所见..."
+            />
+          </div>
+        </div>
+
+        <!-- 检查诊断 -->
+        <div class="rounded-lg border flex-1 flex flex-col" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%);">
+          <div class="px-3 py-2.5 border-b flex items-center gap-2" style="border-color: hsl(0 0% 15%);">
+            <svg class="w-4 h-4" style="color: hsl(210 100% 50%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            <span class="text-xs font-medium text-white">检查诊断</span>
+          </div>
+          <div class="flex-1 p-2">
+            <textarea
+              v-model="store.diagnosisInfo.diagnosis"
+              class="w-full h-full resize-none text-sm rounded-md p-2.5 transition-all focus:outline-none"
+              style="background: hsl(0 0% 4%); border: 1px solid hsl(0 0% 15%); color: hsl(0 0% 80%);"
+              placeholder="请输入检查诊断..."
+            />
+          </div>
+        </div>
+
+        <!-- 危急值和阴阳性 -->
+        <div class="rounded-lg border p-3" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%);">
+          <div class="flex items-center justify-between gap-4">
+            <!-- 危急值 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs" style="color: hsl(0 0% 60%);">危急值:</span>
+              <div class="flex rounded-md overflow-hidden" style="background: hsl(0 0% 10%);">
+                <button
+                  :class="['px-3 py-1 text-xs font-medium transition-all', !store.diagnosisInfo.criticalValue ? 'text-white' : '']"
+                  :style="!store.diagnosisInfo.criticalValue ? 'background: hsl(0 0% 20%);' : 'color: hsl(0 0% 50%);'"
+                  @click="store.updateDiagnosisInfo({ criticalValue: false })"
+                >否</button>
+                <button
+                  :class="['px-3 py-1 text-xs font-medium transition-all']"
+                  :style="store.diagnosisInfo.criticalValue ? 'background: hsl(0 84% 60% / 0.3); color: hsl(0 84% 60%);' : 'color: hsl(0 0% 50%);'"
+                  @click="store.updateDiagnosisInfo({ criticalValue: true })"
+                >是</button>
+              </div>
+            </div>
+
+            <!-- 阴阳性 -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs" style="color: hsl(0 0% 60%);">阴阳性:</span>
+              <div class="flex rounded-md overflow-hidden" style="background: hsl(0 0% 10%);">
+                <button
+                  :class="['px-2 py-1 text-xs font-medium transition-all']"
+                  :style="store.diagnosisInfo.positivity === null ? 'background: hsl(0 0% 20%); color: white;' : 'color: hsl(0 0% 50%);'"
+                  @click="store.updateDiagnosisInfo({ positivity: null })"
+                >未选择</button>
+                <button
+                  :class="['px-2 py-1 text-xs font-medium transition-all']"
+                  :style="store.diagnosisInfo.positivity === 'negative' ? 'background: hsl(142 76% 45% / 0.3); color: hsl(142 76% 45%);' : 'color: hsl(0 0% 50%);'"
+                  @click="store.updateDiagnosisInfo({ positivity: 'negative' })"
+                >阴性</button>
+                <button
+                  :class="['px-2 py-1 text-xs font-medium transition-all']"
+                  :style="store.diagnosisInfo.positivity === 'positive' ? 'background: hsl(0 84% 60% / 0.3); color: hsl(0 84% 60%);' : 'color: hsl(0 0% 50%);'"
+                  @click="store.updateDiagnosisInfo({ positivity: 'positive' })"
+                >阳性</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </aside>
     </main>
 
     <!-- 底部状态栏 -->
-    <footer class="flex-shrink-0 h-8 bg-dark-300/90 backdrop-blur border-t border-dark-50 px-6 flex items-center justify-between text-xs text-gray-500">
-      <div class="flex items-center gap-6">
-        <span class="font-medium text-gray-400">超声智能体 v1.0.0</span>
-        <div class="w-px h-3 bg-dark-50" />
-        <ConnectionStatus
-          :device-status="store.deviceStatus"
-          :ws-status="wsStatus"
-          compact
-        />
+    <footer class="h-7 px-4 flex items-center justify-between text-xs border-t" style="background: hsl(0 0% 7%); border-color: hsl(0 0% 15%);">
+      <div class="flex items-center gap-4">
+        <span style="color: hsl(0 0% 50%);">超声智能体 v1.0.0</span>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full" :style="`background: ${wsStatus === 'connected' ? 'hsl(142 76% 45%)' : 'hsl(0 84% 60%)'};`"></span>
+            <span style="color: hsl(0 0% 50%);">AI服务: {{ wsStatus === 'connected' ? '已连接' : '未连接' }}</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full" :style="`background: ${pacsConnected ? 'hsl(142 76% 45%)' : 'hsl(0 0% 30%)'};`"></span>
+            <span style="color: hsl(0 0% 50%);">PACS: {{ pacsConnected ? '已同步' : '未连接' }}</span>
+          </div>
+        </div>
       </div>
-      <div class="flex items-center gap-6">
-        <div class="flex items-center gap-2">
-          <span class="text-gray-600">BroadcastChannel:</span>
-          <span :class="broadcastSupported ? 'text-emerald-400' : 'text-red-400'" class="font-medium">
-            {{ broadcastSupported ? '已启用' : '不支持' }}
+      <div class="flex items-center gap-4">
+        <span style="color: hsl(0 0% 50%);">
+          BroadcastChannel: 
+          <span :style="`color: ${broadcastSupported ? 'hsl(142 76% 45%)' : 'hsl(0 84% 60%)'};`">
+            {{ broadcastSupported ? '支持' : '不支持' }}
           </span>
-        </div>
-        <div v-if="pacsConnected" class="flex items-center gap-1.5 text-emerald-400">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span>PACS 已同步</span>
-        </div>
-        <div class="flex items-center gap-2 text-gray-400">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>{{ formattedDate }}</span>
-          <span class="text-primary-400 font-mono">{{ formattedTime }}</span>
-        </div>
+        </span>
+        <span style="color: hsl(0 0% 50%);">{{ formattedDate }} {{ formattedTime }}</span>
       </div>
     </footer>
 

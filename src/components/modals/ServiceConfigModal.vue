@@ -113,18 +113,19 @@ const hasChanges = computed(() => {
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" />
         
         <!-- 弹窗内容 -->
-        <div class="relative w-full max-w-2xl bg-dark-300 border border-dark-50 rounded-xl shadow-2xl">
+        <div class="relative w-full max-w-2xl rounded-xl shadow-2xl" style="background: hsl(0 0% 7%); border: 1px solid hsl(0 0% 15%);">
           <!-- 头部 -->
-          <div class="flex items-center justify-between px-6 py-4 border-b border-dark-50">
-            <h2 class="text-lg font-semibold text-gray-100 flex items-center gap-2">
-              <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="flex items-center justify-between px-6 py-4 border-b" style="border-color: hsl(0 0% 15%);">
+            <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+              <svg class="w-5 h-5" style="color: hsl(210 100% 50%);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
               服务配置
             </h2>
             <button
-              class="p-2 rounded-lg text-gray-400 hover:text-gray-200 hover:bg-dark-100 transition-colors"
+              class="p-2 rounded-lg transition-colors hover:bg-white/5"
+              style="color: hsl(0 0% 50%);"
               @click="close"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,14 +138,15 @@ const hasChanges = computed(() => {
           <div class="px-6 py-5 space-y-5 max-h-[60vh] overflow-y-auto">
             <!-- WebSocket 配置 -->
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-gray-300">
+              <label class="block text-sm font-medium" style="color: hsl(0 0% 80%);">
                 WebSocket 服务地址
               </label>
               <div class="flex gap-2">
                 <input
                   v-model="localConfig.wsUrl"
                   type="text"
-                  class="flex-1 px-4 py-2.5 bg-dark-100 border border-dark-50 rounded-lg text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-primary-500/50"
+                  class="flex-1 px-4 py-2.5 rounded-lg text-sm focus:outline-none"
+                  style="background: hsl(0 0% 10%); border: 1px solid hsl(0 0% 15%); color: hsl(0 0% 80%);"
                   placeholder="ws://localhost:8080/ws"
                 />
                 <button
@@ -356,21 +358,20 @@ const hasChanges = computed(() => {
           </div>
           
           <!-- 底部按钮 -->
-          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-dark-50">
+          <div class="flex items-center justify-end gap-3 px-6 py-4 border-t" style="border-color: hsl(0 0% 15%);">
             <button
-              class="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-400 hover:text-gray-200 hover:bg-dark-100 transition-colors"
+              class="px-5 py-2.5 rounded-lg text-sm font-medium transition-colors hover:bg-white/5"
+              style="color: hsl(0 0% 50%);"
               @click="close"
             >
               取消
             </button>
             <button
               :disabled="!hasChanges"
-              :class="[
-                'px-5 py-2.5 rounded-lg text-sm font-medium transition-all',
-                hasChanges
-                  ? 'bg-primary-500 text-white hover:bg-primary-600'
-                  : 'bg-dark-100 text-gray-500 cursor-not-allowed',
-              ]"
+              class="px-5 py-2.5 rounded-lg text-sm font-medium transition-all"
+              :style="hasChanges
+                ? 'background: hsl(210 100% 50%); color: white;'
+                : 'background: hsl(0 0% 15%); color: hsl(0 0% 40%); cursor: not-allowed;'"
               @click="save"
             >
               保存配置
