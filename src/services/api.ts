@@ -3,7 +3,7 @@
  * 统一管理所有 HTTP 请求，支持 Mock 数据模式
  */
 import type { PatientInfo, ExamInfo, AnalysisReport, CapturedImage } from '@/types'
-import { mockPatientInfo, mockExamInfo, mockAnalysisReport, mockCapturedImages } from './mock'
+import { mockPatientInfo, mockPatientQueue, mockExamInfo, mockAnalysisReport, mockCapturedImages } from './mock'
 
 /** API 配置 */
 interface ApiConfig {
@@ -65,6 +65,17 @@ async function request<T>(
  * 患者信息 API
  */
 export const patientApi = {
+  /**
+   * 获取患者队列
+   */
+  async getPatientQueue(): Promise<PatientInfo[]> {
+    if (defaultConfig.useMock) {
+      await delay(300)
+      return mockPatientQueue
+    }
+    return request<PatientInfo[]>('/patient/queue')
+  },
+
   /**
    * 获取当前患者信息
    */

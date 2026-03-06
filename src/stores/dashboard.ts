@@ -13,12 +13,19 @@ import type {
   DeviceStatus,
   VoiceStatus,
   WebSocketStatus,
-  SystemNotification
+  SystemNotification,
+  DiagnosisInfo,
+  VoiceTranscript,
+  ServiceConfig,
+  Positivity
 } from '@/types'
 import { patientApi, examApi, analysisApi, imageApi } from '@/services/api'
 
 export const useDashboardStore = defineStore('dashboard', () => {
   // ============ 状态定义 ============
+  
+  /** 患者队列列表 */
+  const patientQueue = ref<PatientInfo[]>([])
   
   /** 当前患者信息 */
   const currentPatient = ref<PatientInfo | null>(null)
@@ -45,6 +52,28 @@ export const useDashboardStore = defineStore('dashboard', () => {
   
   /** 语音状态 */
   const voiceStatus = ref<VoiceStatus>('idle')
+  
+  /** 语音转录列表 */
+  const voiceTranscripts = ref<VoiceTranscript[]>([])
+  
+  /** 诊断信息 */
+  const diagnosisInfo = ref<DiagnosisInfo>({
+    findings: '',
+    diagnosis: '',
+    criticalValue: false,
+    positivity: null,
+  })
+  
+  /** 服务配置 */
+  const serviceConfig = ref<ServiceConfig>({
+    wsUrl: 'ws://localhost:8080/ws',
+    aiServiceUrl: 'http://localhost:5000/api',
+    pacsUrl: 'http://localhost:8000/pacs',
+    voiceServiceUrl: 'ws://localhost:8081/voice',
+    autoReconnect: true,
+    reconnectInterval: 5,
+    debugMode: false,
+  })
   
   /** WebSocket 连接状态 */
   const wsStatus = ref<WebSocketStatus>('disconnected')
@@ -309,6 +338,85 @@ export const useDashboardStore = defineStore('dashboard', () => {
   }
   
   /**
+   * 添加语音转录
+   */
+  function addVoiceTranscript(text: string, isCommand = false): void {
+    const transcript: VoiceTranscript = {
+      id: `transcript_${Date.now()}`,
+      text,
+      timestamp: new Date().toISOString(),
+      isCommand,
+    }
+    voiceTranscripts.value.unshift(transcript)
+    
+    // 限制最大数量
+    if (voiceTranscripts.value.length > 50) {
+      voiceTranscripts.value = voiceTranscripts.value.slice(0, 50)
+    }
+  }
+  
+  /**
+   * 清除语音转录
+   */
+  function clearVoiceTranscripts(): void {
+    voiceTranscripts.value = []
+  }
+  
+  /**
+   * 更新诊断信息
+   */
+  function updateDiagnosisInfo(info: Partial<DiagnosisInfo>): void {
+    diagnosisInfo.value = { ...diagnosisInfo.value, ...info }
+  }
+  
+  /**
+   * 重置诊断信息
+   */
+  function resetDiagnosisInfo(): void {
+    diagnosisInfo.value = {
+      findings: '',
+      diagnosis: '',
+      criticalValue: false,
+      positivity: null,
+    }
+  }
+  
+  /**
+   * 更新服务配置
+   */
+  function updateServiceConfig(config: Partial<ServiceConfig>): void {
+    serviceConfig.value = { ...serviceConfig.value, ...config }
+  }
+  
+  /**
+   * 加载患者队列
+   */
+  async function loadPatientQueue(): Promise<void> {
+    loading.value.patient = true
+    error.value = null
+    
+    try {
+      patientQueue.value = await patientApi.getPatientQueue()
+    } catch (e) {
+      error.value = '加载患者队列失败'
+      console.error('[Store] 加载患者队列失败:', e)
+    } finally {
+      loading.value.patient = false
+    }
+  }
+  
+  /**
+   * 选择患者
+   */
+  function selectPatient(patient: PatientInfo): void {
+    setCurrentPatient(patient)
+    // 重置诊断信息
+    resetDiagnosisInfo()
+    // 清空语音转录
+    clearVoiceTranscripts()
+  }
+  
+  /**
    * 设置 WebSocket 状态
    */
   function setWsStatus(status: WebSocketStatus): void {
@@ -382,6 +490,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
    */
   async function initialize(): Promise<void> {
     await Promise.all([
+      loadPatientQueue(),
       loadCurrentPatient(),
       loadCurrentExam(),
     ])
@@ -396,6 +505,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   return {
     // 状态
+    patientQueue,
     currentPatient,
     currentExam,
     analysisReport,
@@ -403,6 +513,9 @@ export const useDashboardStore = defineStore('dashboard', () => {
     capturedImages,
     deviceStatus,
     voiceStatus,
+    voiceTranscripts,
+    diagnosisInfo,
+    serviceConfig,
     wsStatus,
     notifications,
     loading,
@@ -416,8 +529,10 @@ export const useDashboardStore = defineStore('dashboard', () => {
     isConnected,
     
     // 患者操作
+    loadPatientQueue,
     loadCurrentPatient,
     setCurrentPatient,
+    selectPatient,
     clearCurrentPatient,
     
     // 检查操作
@@ -438,6 +553,17 @@ export const useDashboardStore = defineStore('dashboard', () => {
     updateDeviceStatus,
     setVoiceStatus,
     setWsStatus,
+    
+    // 语音转录操作
+    addVoiceTranscript,
+    clearVoiceTranscripts,
+    
+    // 诊断操作
+    updateDiagnosisInfo,
+    resetDiagnosisInfo,
+    
+    // 配置操作
+    updateServiceConfig,
     
     // 通知操作
     addNotification,

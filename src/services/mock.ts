@@ -10,20 +10,69 @@ import type {
   AnalysisResultItem 
 } from '@/types'
 
+/** 模拟患者队列 */
+export const mockPatientQueue: PatientInfo[] = [
+  {
+    id: 'P20240315001',
+    name: '测试22',
+    gender: 'male',
+    age: 32,
+    patientNo: 'MRN2024031500123',
+    department: '超声科',
+    examPart: '对开12',
+    examTime: new Date().toISOString(),
+    chiefComplaint: '常规检查',
+  },
+  {
+    id: 'P20240315002',
+    name: '李明华',
+    gender: 'male',
+    age: 58,
+    patientNo: 'MRN2024031500124',
+    department: '内科',
+    examPart: '肝胆脾',
+    examTime: new Date(Date.now() - 600000).toISOString(),
+    chiefComplaint: '上腹部不适3天',
+    clinicalDiagnosis: '待查：肝脏占位性病变？',
+  },
+  {
+    id: 'P20240315003',
+    name: '王秀英',
+    gender: 'female',
+    age: 42,
+    patientNo: 'MRN2024031500125',
+    department: '妇科',
+    examPart: '盆腔',
+    examTime: new Date(Date.now() - 1200000).toISOString(),
+    chiefComplaint: '下腹疼痛',
+  },
+  {
+    id: 'P20240315004',
+    name: '张伟',
+    gender: 'male',
+    age: 65,
+    patientNo: 'MRN2024031500126',
+    department: '心内科',
+    examPart: '心脏',
+    examTime: new Date(Date.now() - 1800000).toISOString(),
+    chiefComplaint: '心悸、胸闷',
+    clinicalDiagnosis: '冠心病？',
+  },
+  {
+    id: 'P20240315005',
+    name: '陈静',
+    gender: 'female',
+    age: 35,
+    patientNo: 'MRN2024031500127',
+    department: '甲乳外科',
+    examPart: '甲状腺',
+    examTime: new Date(Date.now() - 2400000).toISOString(),
+    chiefComplaint: '颈部肿块',
+  },
+]
+
 /** 模拟患者信息 */
-export const mockPatientInfo: PatientInfo = {
-  id: 'P20240315001',
-  name: '张三',
-  gender: 'male',
-  age: 45,
-  patientNo: 'MRN2024031500123',
-  bedNo: '12床',
-  department: '超声科',
-  examPart: '肝胆脾',
-  examTime: new Date().toISOString(),
-  chiefComplaint: '上腹部不适3天',
-  clinicalDiagnosis: '待查：肝脏占位性病变？',
-}
+export const mockPatientInfo: PatientInfo = mockPatientQueue[0]
 
 /** 模拟检查信息 */
 export const mockExamInfo: ExamInfo = {

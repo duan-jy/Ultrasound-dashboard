@@ -11,9 +11,13 @@ interface Props {
   deviceStatus: DeviceStatus
   /** WebSocket 状态 */
   wsStatus: WebSocketStatus
+  /** 紧凑模式 */
+  compact?: boolean
 }
 
-defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  compact: false,
+})
 
 /** WebSocket 状态映射 */
 function getWsStatusType(status: WebSocketStatus) {
@@ -41,7 +45,22 @@ function getWsStatusText(status: WebSocketStatus) {
 </script>
 
 <template>
-  <div class="flex items-center gap-4 px-4 py-2 bg-dark-200 border border-dark-50 rounded-lg">
+  <!-- 紧凑模式 -->
+  <div v-if="compact" class="flex items-center gap-3">
+    <StatusIndicator
+      :status="wsStatus === 'connected' ? 'online' : getWsStatusType(wsStatus)"
+      :label="`AI: ${getWsStatusText(wsStatus)}`"
+      size="sm"
+    />
+    <StatusIndicator
+      :status="deviceStatus.pacs ? 'online' : 'offline'"
+      :label="`PACS: ${deviceStatus.pacs ? '已连接' : '未连接'}`"
+      size="sm"
+    />
+  </div>
+  
+  <!-- 完整模式 -->
+  <div v-else class="flex items-center gap-4 px-4 py-2 bg-dark-200 border border-dark-50 rounded-lg">
     <!-- AI 服务 -->
     <StatusIndicator
       :status="wsStatus === 'connected' ? 'online' : getWsStatusType(wsStatus)"

@@ -257,3 +257,54 @@ export interface SystemNotification {
   /** 是否已读 */
   read: boolean
 }
+
+// ============ 诊断相关类型 ============
+
+/** 阴阳性 */
+export type Positivity = 'positive' | 'negative' | null
+
+/** 诊断信息 */
+export interface DiagnosisInfo {
+  /** 检查所见 */
+  findings: string
+  /** 检查诊断 */
+  diagnosis: string
+  /** 危急值 */
+  criticalValue: boolean
+  /** 阴阳性 */
+  positivity: Positivity
+}
+
+// ============ 语音转录相关类型 ============
+
+/** 语音转录项 */
+export interface VoiceTranscript {
+  /** ID */
+  id: string
+  /** 文本内容 */
+  text: string
+  /** 时间戳 */
+  timestamp: string
+  /** 是否为命令 */
+  isCommand?: boolean
+}
+
+// ============ 服务配置相关类型 ============
+
+/** 服务配置 */
+export interface ServiceConfig {
+  /** WebSocket 服务地址 */
+  wsUrl: string
+  /** AI 分析服务地址 */
+  aiServiceUrl: string
+  /** PACS 服务地址 */
+  pacsUrl: string
+  /** 语音识别服务地址 */
+  voiceServiceUrl: string
+  /** 自动重连 */
+  autoReconnect: boolean
+  /** 重连间隔(秒) */
+  reconnectInterval: number
+  /** 调试模式 */
+  debugMode: boolean
+}
