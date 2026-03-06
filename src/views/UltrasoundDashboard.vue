@@ -152,57 +152,75 @@ function openConfigModal() {
 <template>
   <div class="h-screen w-screen bg-dark-400 flex flex-col overflow-hidden">
     <!-- 顶部栏 -->
-    <header class="flex-shrink-0 h-14 bg-dark-300 border-b border-dark-50 px-4 flex items-center justify-between">
+    <header class="flex-shrink-0 h-16 bg-dark-300/95 backdrop-blur border-b border-dark-50 px-6 flex items-center justify-between">
       <!-- 左侧：Logo 和标题 -->
       <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
             </svg>
           </div>
-          <h1 class="text-base font-semibold text-white">智能超声辅助检查系统</h1>
+          <div>
+            <h1 class="text-lg font-bold text-white tracking-tight">智能超声辅助检查系统</h1>
+            <p class="text-xs text-gray-500">AI-Powered Ultrasound Assistant</p>
+          </div>
         </div>
       </div>
 
       <!-- 中间：当前患者信息 -->
-      <div v-if="currentPatientDisplay" class="flex items-center gap-4 text-sm">
-        <span class="text-gray-400">姓名:</span>
-        <span class="text-primary-400 font-medium">{{ currentPatientDisplay.name }}</span>
-        <span class="text-gray-400">年龄:</span>
-        <span class="text-white">{{ currentPatientDisplay.age }}岁</span>
-        <span class="text-gray-400">性别:</span>
-        <span class="text-white">{{ currentPatientDisplay.gender }}</span>
-        <span class="text-gray-400">检查部位:</span>
-        <span class="text-white">{{ currentPatientDisplay.examPart }}</span>
+      <div v-if="currentPatientDisplay" class="flex items-center gap-6 px-6 py-2 bg-dark-200/80 rounded-xl border border-dark-50">
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-500 uppercase tracking-wide">姓名</span>
+          <span class="text-primary-400 font-semibold">{{ currentPatientDisplay.name }}</span>
+        </div>
+        <div class="w-px h-4 bg-dark-50" />
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-500 uppercase tracking-wide">年龄</span>
+          <span class="text-white font-medium">{{ currentPatientDisplay.age }}岁</span>
+        </div>
+        <div class="w-px h-4 bg-dark-50" />
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-500 uppercase tracking-wide">性别</span>
+          <span class="text-white font-medium">{{ currentPatientDisplay.gender }}</span>
+        </div>
+        <div class="w-px h-4 bg-dark-50" />
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-500 uppercase tracking-wide">检查部位</span>
+          <span class="text-emerald-400 font-medium">{{ currentPatientDisplay.examPart }}</span>
+        </div>
       </div>
 
       <!-- 右侧：操作按钮 -->
-      <div class="flex items-center gap-2">
-        <button class="px-3 py-1.5 text-sm bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors">
+      <div class="flex items-center gap-3">
+        <button class="px-4 py-2 text-sm font-medium bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all hover:shadow-lg hover:shadow-primary-500/20 active:scale-95">
           查看报告
         </button>
-        <button class="px-3 py-1.5 text-sm bg-primary-500/20 text-primary-400 border border-primary-500/30 rounded-md hover:bg-primary-500/30 transition-colors">
+        <button class="px-4 py-2 text-sm font-medium bg-primary-500/15 text-primary-400 border border-primary-500/30 rounded-lg hover:bg-primary-500/25 transition-all">
           触动图
         </button>
-        <button class="px-3 py-1.5 text-sm bg-dark-100 text-gray-300 border border-dark-50 rounded-md hover:border-gray-500 transition-colors">
+        <button class="px-4 py-2 text-sm font-medium bg-dark-100 text-gray-300 border border-dark-50 rounded-lg hover:border-gray-500 hover:text-white transition-all">
           使用说明
         </button>
         <button 
-          class="px-3 py-1.5 text-sm bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-md hover:bg-emerald-500/30 transition-colors"
+          class="px-4 py-2 text-sm font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/25 transition-all flex items-center gap-2"
           @click="openConfigModal"
         >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
           服务配置
         </button>
       </div>
     </header>
 
     <!-- 主内容区 -->
-    <main class="flex-1 flex gap-3 p-3 min-h-0">
+    <main class="flex-1 flex gap-4 p-4 min-h-0">
       <!-- 左栏：患者队列 + 语音助手 -->
-      <aside class="w-64 flex-shrink-0 flex flex-col gap-3">
+      <aside class="w-72 flex-shrink-0 flex flex-col gap-4">
         <!-- 患者队列 -->
-        <div class="flex-1 min-h-0">
+        <div class="flex-[1.2] min-h-0">
           <PatientQueue
             :patients="store.patientQueue"
             :current-patient-id="store.currentPatient?.id || null"
@@ -212,7 +230,7 @@ function openConfigModal() {
         </div>
 
         <!-- 语音助手 -->
-        <div class="h-72 flex-shrink-0">
+        <div class="flex-1 min-h-0">
           <VoicePanel
             :status="store.voiceStatus"
             :transcripts="store.voiceTranscripts"
@@ -223,22 +241,29 @@ function openConfigModal() {
       </aside>
 
       <!-- 中栏：视频显示 + 图像采集 -->
-      <section class="flex-1 flex flex-col gap-3 min-w-0">
-        <!-- 采集图像标题 -->
+      <section class="flex-1 flex flex-col gap-4 min-w-0">
+        <!-- 采集图像区域 -->
         <GlowCard :has-header="true" glow="none" class="flex-shrink-0">
           <template #header>
             <div class="flex items-center justify-between">
-              <h3 class="text-sm font-semibold text-gray-100">采集图像</h3>
-              <span class="text-xs text-gray-500">总计: {{ store.capturedImages.length }}</span>
+              <h3 class="text-sm font-semibold text-gray-100 flex items-center gap-2">
+                <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                采集图像
+              </h3>
+              <span class="text-xs text-gray-500 bg-dark-100 px-2 py-0.5 rounded-full">
+                总计: {{ store.capturedImages.length }}
+              </span>
             </div>
           </template>
           
           <!-- 缩略图行 -->
-          <div class="flex gap-2 overflow-x-auto pb-1">
+          <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-thin">
             <div
-              v-for="image in store.capturedImages.slice(0, 8)"
+              v-for="image in store.capturedImages.slice(0, 10)"
               :key="image.id"
-              class="w-16 h-16 flex-shrink-0 rounded-lg bg-dark-100 border border-dark-50 overflow-hidden cursor-pointer hover:border-primary-500/50 transition-colors"
+              class="w-16 h-16 flex-shrink-0 rounded-lg bg-dark-100 border border-dark-50 overflow-hidden cursor-pointer hover:border-primary-500/50 hover:scale-105 transition-all duration-200"
             >
               <div class="w-full h-full bg-dark-50 flex items-center justify-center">
                 <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,15 +273,18 @@ function openConfigModal() {
             </div>
             <div
               v-if="store.capturedImages.length === 0"
-              class="text-sm text-gray-500 py-4"
+              class="flex items-center gap-2 text-sm text-gray-500 py-4"
             >
-              暂无采集图像
+              <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              暂无采集图像，点击截图按钮开始采集
             </div>
           </div>
         </GlowCard>
 
         <!-- 视频区域 -->
-        <div class="flex-1 min-h-0">
+        <div class="flex-1 min-h-0 rounded-xl overflow-hidden">
           <VideoDisplay
             :show-controls="true"
             @capture="handleCapture"
@@ -266,7 +294,7 @@ function openConfigModal() {
       </section>
 
       <!-- 右栏：诊断面板 -->
-      <aside class="w-80 flex-shrink-0">
+      <aside class="w-[340px] flex-shrink-0">
         <DiagnosisPanel
           :findings="store.diagnosisInfo.findings"
           :diagnosis="store.diagnosisInfo.diagnosis"
@@ -282,25 +310,34 @@ function openConfigModal() {
     </main>
 
     <!-- 底部状态栏 -->
-    <footer class="flex-shrink-0 h-7 bg-dark-300 border-t border-dark-50 px-4 flex items-center justify-between text-xs text-gray-500">
-      <div class="flex items-center gap-4">
-        <span>超声智能体 v1.0.0</span>
-        <span class="text-dark-50">|</span>
+    <footer class="flex-shrink-0 h-8 bg-dark-300/90 backdrop-blur border-t border-dark-50 px-6 flex items-center justify-between text-xs text-gray-500">
+      <div class="flex items-center gap-6">
+        <span class="font-medium text-gray-400">超声智能体 v1.0.0</span>
+        <div class="w-px h-3 bg-dark-50" />
         <ConnectionStatus
           :device-status="store.deviceStatus"
           :ws-status="wsStatus"
           compact
         />
       </div>
-      <div class="flex items-center gap-4">
-        <span>
-          BroadcastChannel: 
-          <span :class="broadcastSupported ? 'text-emerald-400' : 'text-red-400'">
-            {{ broadcastSupported ? '支持' : '不支持' }}
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="text-gray-600">BroadcastChannel:</span>
+          <span :class="broadcastSupported ? 'text-emerald-400' : 'text-red-400'" class="font-medium">
+            {{ broadcastSupported ? '已启用' : '不支持' }}
           </span>
-        </span>
-        <span v-if="pacsConnected" class="text-emerald-400">PACS 已同步</span>
-        <span>{{ formattedDate }} {{ formattedTime }}</span>
+        </div>
+        <div v-if="pacsConnected" class="flex items-center gap-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span>PACS 已同步</span>
+        </div>
+        <div class="flex items-center gap-2 text-gray-400">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ formattedDate }}</span>
+          <span class="text-primary-400 font-mono">{{ formattedTime }}</span>
+        </div>
       </div>
     </footer>
 

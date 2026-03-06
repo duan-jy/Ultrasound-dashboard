@@ -42,18 +42,21 @@ function formatTime(time?: string): string {
 </script>
 
 <template>
-  <GlowCard :has-header="true" glow="primary" class="h-full flex flex-col">
+  <GlowCard :has-header="true" glow="primary" class="h-full flex flex-col" scrollable>
     <template #header>
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-semibold text-gray-100 flex items-center gap-2">
           <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
-          就诊人数 ({{ patients.length }})
+          就诊人数
+          <span class="ml-1 px-1.5 py-0.5 text-xs bg-primary-500/20 text-primary-400 rounded-full">
+            {{ patients.length }}
+          </span>
         </h3>
-        <div class="flex items-center gap-1">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span class="text-xs text-gray-500">实时</span>
+        <div class="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 rounded-full">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span class="text-xs text-emerald-400">实时</span>
         </div>
       </div>
     </template>
@@ -78,7 +81,7 @@ function formatTime(time?: string): string {
     </div>
 
     <!-- 患者列表 -->
-    <div v-else class="flex-1 overflow-y-auto space-y-2 pr-1">
+    <div v-else class="flex-1 overflow-y-auto space-y-2 pr-1 scrollbar-thin">
       <div
         v-for="patient in patients"
         :key="patient.id"

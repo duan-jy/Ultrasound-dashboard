@@ -70,7 +70,8 @@ function formatTime(timestamp: string): string {
   <GlowCard
     :has-header="true"
     :glow="status === 'listening' ? 'primary' : status === 'speaking' ? 'success' : 'none'"
-    class="flex flex-col"
+    class="h-full flex flex-col"
+    scrollable
   >
     <template #header>
       <div class="flex items-center justify-between">
@@ -159,7 +160,7 @@ function formatTime(timestamp: string): string {
     </div>
 
     <!-- 识别文字区域 -->
-    <div class="mt-4 flex-1 min-h-[120px] bg-dark-100 rounded-lg border border-dark-50 overflow-hidden">
+    <div class="mt-4 flex-1 min-h-0 bg-dark-100 rounded-lg border border-dark-50 overflow-hidden">
       <!-- 空状态 -->
       <div
         v-if="transcripts.length === 0"

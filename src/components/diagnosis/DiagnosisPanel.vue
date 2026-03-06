@@ -84,9 +84,9 @@ const positivityText = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 h-full">
+  <div class="flex flex-col gap-4 h-full overflow-hidden">
     <!-- 患者画像/历史 -->
-    <GlowCard :has-header="true" glow="none" class="flex-shrink-0">
+    <GlowCard :has-header="true" glow="none" class="flex-shrink-0" compact>
       <template #header>
         <h3 class="text-sm font-semibold text-gray-100 flex items-center gap-2">
           <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,8 +96,11 @@ const positivityText = computed(() => {
         </h3>
       </template>
       
-      <div v-if="!hasPatient" class="text-center py-4">
-        <p class="text-sm text-gray-500">当前患者暂无历史诊断记录</p>
+      <div v-if="!hasPatient" class="text-center py-3">
+        <svg class="w-8 h-8 text-dark-50 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+        <p class="text-xs text-gray-500">当前患者暂无历史诊断记录</p>
       </div>
       <div v-else class="text-sm text-gray-400 leading-relaxed">
         <slot name="patientHistory">
@@ -107,7 +110,7 @@ const positivityText = computed(() => {
     </GlowCard>
 
     <!-- 检查所见 -->
-    <GlowCard :has-header="true" glow="none" class="flex-1 min-h-0 flex flex-col">
+    <GlowCard :has-header="true" glow="none" class="flex-1 min-h-0 flex flex-col" scrollable compact>
       <template #header>
         <h3 class="text-sm font-semibold text-gray-100 flex items-center gap-2">
           <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,9 +125,9 @@ const positivityText = computed(() => {
         :value="localFindings"
         :readonly="readonly"
         :class="[
-          'flex-1 w-full bg-dark-100 border border-dark-50 rounded-lg p-3 text-sm text-gray-300',
-          'placeholder-gray-600 resize-none focus:outline-none focus:border-primary-500/50',
-          'transition-colors',
+          'flex-1 w-full min-h-[80px] bg-dark-100 border border-dark-50 rounded-lg p-3 text-sm text-gray-300',
+          'placeholder-gray-600 resize-none focus:outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20',
+          'transition-all scrollbar-thin',
           readonly ? 'cursor-not-allowed opacity-70' : '',
         ]"
         placeholder="请输入检查所见..."
@@ -133,7 +136,7 @@ const positivityText = computed(() => {
     </GlowCard>
 
     <!-- 检查诊断 -->
-    <GlowCard :has-header="true" glow="none" class="flex-1 min-h-0 flex flex-col">
+    <GlowCard :has-header="true" glow="none" class="flex-1 min-h-0 flex flex-col" scrollable compact>
       <template #header>
         <h3 class="text-sm font-semibold text-gray-100 flex items-center gap-2">
           <svg class="w-4 h-4 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,9 +150,9 @@ const positivityText = computed(() => {
         :value="localDiagnosis"
         :readonly="readonly"
         :class="[
-          'flex-1 w-full bg-dark-100 border border-dark-50 rounded-lg p-3 text-sm text-gray-300',
-          'placeholder-gray-600 resize-none focus:outline-none focus:border-primary-500/50',
-          'transition-colors',
+          'flex-1 w-full min-h-[80px] bg-dark-100 border border-dark-50 rounded-lg p-3 text-sm text-gray-300',
+          'placeholder-gray-600 resize-none focus:outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/20',
+          'transition-all scrollbar-thin',
           readonly ? 'cursor-not-allowed opacity-70' : '',
         ]"
         placeholder="请输入检查诊断..."
@@ -158,17 +161,17 @@ const positivityText = computed(() => {
     </GlowCard>
 
     <!-- 危急值和阴阳性 -->
-    <div class="flex-shrink-0 bg-dark-200 border border-dark-50 rounded-lg p-4">
-      <div class="flex items-center justify-between">
+    <div class="flex-shrink-0 bg-dark-200 border border-dark-50 rounded-xl p-4">
+      <div class="flex items-center justify-between gap-4">
         <!-- 危急值 -->
         <div class="flex items-center gap-3">
-          <span class="text-sm text-gray-400">危急值:</span>
-          <div class="flex items-center gap-1 bg-dark-100 rounded-lg p-1">
+          <span class="text-sm text-gray-400 font-medium">危急值</span>
+          <div class="flex items-center bg-dark-100 rounded-lg p-0.5">
             <button
               :class="[
-                'px-3 py-1 text-sm rounded-md transition-all',
+                'px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-200',
                 !localCriticalValue
-                  ? 'bg-gray-500/20 text-gray-300'
+                  ? 'bg-dark-50 text-gray-200 shadow-sm'
                   : 'text-gray-500 hover:text-gray-400',
               ]"
               :disabled="readonly"
@@ -178,9 +181,9 @@ const positivityText = computed(() => {
             </button>
             <button
               :class="[
-                'px-3 py-1 text-sm rounded-md transition-all',
+                'px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-200',
                 localCriticalValue
-                  ? 'bg-red-500/20 text-red-400'
+                  ? 'bg-red-500/30 text-red-400 shadow-sm shadow-red-500/20'
                   : 'text-gray-500 hover:text-gray-400',
               ]"
               :disabled="readonly"
@@ -193,13 +196,13 @@ const positivityText = computed(() => {
 
         <!-- 阴阳性 -->
         <div class="flex items-center gap-3">
-          <span class="text-sm text-gray-400">阴阳性:</span>
-          <div class="flex items-center gap-1 bg-dark-100 rounded-lg p-1">
+          <span class="text-sm text-gray-400 font-medium">阴阳性</span>
+          <div class="flex items-center bg-dark-100 rounded-lg p-0.5">
             <button
               :class="[
-                'px-3 py-1 text-sm rounded-md transition-all',
+                'px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200',
                 localPositivity === null
-                  ? 'bg-gray-500/20 text-gray-300'
+                  ? 'bg-dark-50 text-gray-200 shadow-sm'
                   : 'text-gray-500 hover:text-gray-400',
               ]"
               :disabled="readonly"
@@ -209,9 +212,9 @@ const positivityText = computed(() => {
             </button>
             <button
               :class="[
-                'px-3 py-1 text-sm rounded-md transition-all',
+                'px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200',
                 localPositivity === 'negative'
-                  ? 'bg-emerald-500/20 text-emerald-400'
+                  ? 'bg-emerald-500/30 text-emerald-400 shadow-sm shadow-emerald-500/20'
                   : 'text-gray-500 hover:text-gray-400',
               ]"
               :disabled="readonly"
@@ -221,9 +224,9 @@ const positivityText = computed(() => {
             </button>
             <button
               :class="[
-                'px-3 py-1 text-sm rounded-md transition-all',
+                'px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200',
                 localPositivity === 'positive'
-                  ? 'bg-red-500/20 text-red-400'
+                  ? 'bg-red-500/30 text-red-400 shadow-sm shadow-red-500/20'
                   : 'text-gray-500 hover:text-gray-400',
               ]"
               :disabled="readonly"

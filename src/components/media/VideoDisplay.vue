@@ -99,7 +99,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="relative w-full h-full bg-black rounded-lg overflow-hidden group">
+  <div class="relative w-full h-full bg-dark-400 rounded-xl overflow-hidden group border border-dark-50">
     <!-- 视频元素 -->
     <video
       ref="videoElement"
@@ -112,29 +112,33 @@ onUnmounted(() => {
     <!-- 占位状态 -->
     <div
       v-if="!isCapturing"
-      class="absolute inset-0 flex flex-col items-center justify-center bg-dark-400"
+      class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-dark-400 to-dark-300"
     >
-      <svg class="w-20 h-20 text-dark-100 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-      </svg>
-      <p class="text-gray-500 text-sm mb-4">视频源未连接</p>
+      <div class="relative mb-6">
+        <div class="absolute -inset-4 bg-primary-500/10 rounded-full blur-xl animate-pulse" />
+        <svg class="relative w-24 h-24 text-dark-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <p class="text-gray-400 text-base mb-2 font-medium">视频源未连接</p>
+      <p class="text-gray-600 text-sm mb-6">请选择采集方式开始超声图像采集</p>
       
       <!-- 启动按钮 -->
-      <div v-if="showControls" class="flex gap-3">
+      <div v-if="showControls" class="flex gap-4">
         <button
-          class="px-4 py-2 bg-primary-600 hover:bg-primary-500 text-white text-sm rounded-lg transition-colors flex items-center gap-2"
+          class="px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-xl transition-all shadow-lg shadow-primary-500/20 hover:shadow-primary-500/30 active:scale-95 flex items-center gap-2"
           @click="handleStartCapture('screen')"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           采集屏幕
         </button>
         <button
-          class="px-4 py-2 bg-dark-100 hover:bg-dark-50 text-gray-300 text-sm rounded-lg transition-colors flex items-center gap-2"
+          class="px-5 py-2.5 bg-dark-100 hover:bg-dark-50 text-gray-300 text-sm font-medium rounded-xl border border-dark-50 hover:border-gray-500 transition-all active:scale-95 flex items-center gap-2"
           @click="handleStartCapture('camera')"
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
           </svg>
@@ -146,20 +150,20 @@ onUnmounted(() => {
     <!-- 控制栏 -->
     <div
       v-if="isCapturing && showControls"
-      class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+      class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300"
     >
       <div class="flex items-center justify-between">
         <!-- 左侧：状态 -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-3 bg-dark-400/80 backdrop-blur-sm px-3 py-1.5 rounded-full">
           <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-          <span class="text-xs text-gray-300">实时采集中</span>
+          <span class="text-xs text-gray-200 font-medium">实时采集中</span>
         </div>
         
         <!-- 右侧：按钮 -->
         <div class="flex items-center gap-2">
           <!-- 截图 -->
           <button
-            class="p-2 bg-primary-600 hover:bg-primary-500 text-white rounded-lg transition-colors"
+            class="p-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl transition-all shadow-lg shadow-primary-500/20 active:scale-95"
             title="截图"
             @click="handleCapture"
           >
@@ -171,7 +175,7 @@ onUnmounted(() => {
           
           <!-- 全屏 -->
           <button
-            class="p-2 bg-dark-100 hover:bg-dark-50 text-gray-300 rounded-lg transition-colors"
+            class="p-2.5 bg-dark-200/80 backdrop-blur-sm hover:bg-dark-100 text-gray-300 rounded-xl border border-dark-50 transition-all active:scale-95"
             title="全屏"
             @click="toggleFullscreen"
           >
@@ -185,12 +189,12 @@ onUnmounted(() => {
           
           <!-- 停止 -->
           <button
-            class="p-2 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors"
+            class="p-2.5 bg-red-500/80 hover:bg-red-500 text-white rounded-xl transition-all shadow-lg shadow-red-500/20 active:scale-95"
             title="停止"
             @click="handleStopCapture"
           >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <rect x="6" y="6" width="12" height="12" rx="1" />
+              <rect x="6" y="6" width="12" height="12" rx="2" />
             </svg>
           </button>
         </div>
